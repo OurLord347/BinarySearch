@@ -2,20 +2,24 @@
 
 class BinarySearch
 {
+	function __construct($filePath){
+		$this->filePath = $filePath;
+	}
 	private $keySep = '\x0A'; //Ключ начала ключа
 	private $valueSep = '\t'; //Ключ начала значения
 	private $recordLeng = 4000; //Длинна записи
-	public function search($filePath,$keySearch)
+	private $filePath = '';
+	public function search($keySearch)
 	{
 		
 		$keyLen = strlen($this->keySep); //Длинна ключа
 		$valueLen = strlen($this->valueSep); //Длинна ключа значения
-		$fileSize = filesize($filePath)/2; //Кол-во символов в файле
+		$fileSize = filesize($this->filePath)/2; //Кол-во символов в файле
 		
 		$minCof = 0;
-		$maxCof = filesize($filePath);
+		$maxCof = filesize($this->filePath);
 		
-		$content = file_get_contents($filePath, NULL, NULL, 0, $this->recordLeng*2);//Беру данные из файла
+		$content = file_get_contents($this->filePath, NULL, NULL, 0, $this->recordLeng*2);//Беру данные из файла
 		$founds = substr($content, 0, strlen($keySearch));
 		
 		 
@@ -29,7 +33,7 @@ class BinarySearch
 		}
 		
 		while(true){
-			$content = file_get_contents($filePath, NULL, NULL, (int)$fileSize, $this->recordLeng*2);//Беру данные из файла
+			$content = file_get_contents($this->filePath, NULL, NULL, (int)$fileSize, $this->recordLeng*2);//Беру данные из файла
 
 			$found = strstr($content, $this->keySep);
 			if(empty($found)){
@@ -59,11 +63,11 @@ class BinarySearch
 		}
 	}
 
-	public function createTestData($filePath,$sizeMB)
+	public function createTestData($sizeMB)
 	{
 		$key = 1;
 		$stringOut = 'KeyElem'.$key++;
-		$file = fopen($filePath, 'w') or die("не удалось создать файл");
+		$file = fopen($this->filePath, 'w') or die("не удалось создать файл");
 		
 		for ($i=0; $i < $sizeMB; $i++) { 
 
